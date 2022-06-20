@@ -1,0 +1,21 @@
+科技论文写作标准：
+1.追求信达雅
+2.分辨率：
+示意图(流程图，结构图等，代表流程) -> 工具：adobe AI，PPT 
+表格：
+1.Latex .tex
+2.overleaf latex编译器
+
+统计图表：
+高维度-平行坐标
+流程等 - 桑吉图
+雷达图等都可以用
+
+tools：
+excel,gephi,arcgis,
+
+在线可编程版本：
+onlinecharts
+plotly ⭐推荐
+
+做完图后要调长宽比等 -> Refine chart

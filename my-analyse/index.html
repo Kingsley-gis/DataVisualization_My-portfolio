@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>深圳市地铁可视化分析系统</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.2/mapbox-gl-draw.css" type="text/css">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+    <!-- <script src="../lib/jquery.min.js"></script> -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.2/mapbox-gl-draw.js"></script>
+    <script src="./lib/turf.min.js"></script>
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="./js/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="./lib/calculate.js"></script>
+  <script src="./js/echarts.js"></script>
+  <script src="./js/echarts.min.js"></script>
+  <script src="./js/echarts-wordcloud.js"></script>
+  <script src="./js/bmap.js"></script>
+  <!-- <script src=""></script> -->
+  <script type="text/javascript" src="https://api.map.baidu.com/getscript?v=3.0&ak=f8GgvXGNa3rCqHkmrAdAgPm3YFV12uTi&services=&t=20200327103013"></script>
+  <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script>
+  <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+  <link rel="stylesheet" href="https://cache.amap.com/lbs/static/jquery.range.css" />
+  <script src="./lib/bootstrap.min.js"></script>
+
+
+    <!-- <script src="./lib/calc.js"></script> -->
+
+
+    <style>
+      
+    </style>
+  </head>
+  <body>
+    <div id="map2"></div>
+
+
+
+
+    <!-- sidebar -->
+    <div id="left" class="sidebar flex-center left collapsed">
+      <div class="sidebar-content rounded-rect flex-center">
+      <!-- test -->
+            
+<div class="panel-group" id="accordion">
+
+  <fieldset>
+    <h2 style="font-weight:bold">城市群可达性分析系统<h2>
+    <p id="durationValue"></p>
+    </fieldset>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseTwo">
+					<h4 style = "font-weight:bold ;color:black" >可达性计算
+				</a>
+        <span> &nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+        <a title = "平均出行时间计算方法：获得每个栅格到其他所有栅格的出租车交通方式出行时长，再计算平均值得到" href=""><svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-heart" viewBox="0 0 16 16">
+          <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12ZM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2Z"/>
+          <path d="M8 3.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z"/>
+        </svg></a>
+        
+			</h4>
+		</div>
+		<div id="collapseTwo" class="panel-collapse collapse">
+			<div class="panel-body" style="">
+
+        
+<table class="table"style=" border:none">
+	<h3 style="font-weight:bold ; border:none">交通拓扑网络</caption>
+
+	<tbody style=" border:none">
+		<tr>
+			<td  class="active" style="font-size:medium; border:none">内置节点个数</td>
+			<td  style="font-size:medium; border:none">312</td>
+			<td  class="active"  style="font-size:medium; border:none">内置边个数</td>
+      <td style="font-size:medium; border:none">475</td>
+		</tr>
+		<tr>
+			<td class="active" style="font-size:medium; border:none">自定义节点个数</td>
+			<td style="font-size:medium; border:none" id = "custom-point">0</td>
+			<td  class="active" style="font-size:medium; border:none">自定义边个数</td>
+      <td style="font-size:medium; border:none" id = "custom-edge">0</td>
+		</tr>
+
+	</tbody>
+<p>新增线路总长度为:</p>
+<p id = "test_area"></p>
+
+</table>
+<div id="main-charts" style="width: 600px;height:100px;">
+
+</div>
+        <!-- grid// -->
+        <!-- button -->
+        <button id="set" onclick="c.click()">添加路线</button>
+        <button id="set" onclick="calculate2()">计算可达性</button>
+       
+  <!-- button //  -->
+
+  <div class="toggle">
+    <span>显示原始可达性分级</span>
+    <!-- toggle switch  -->
+    <label class="switch">
+      <input type="checkbox" id = "ori_box">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div class="toggle">
+    <span>显示更新后可达性分级</span>
+    <!-- toggle switch  -->
+    <label class="switch">
+      <input type="checkbox" id = "accessbox">
+      <span class="slider round"></span>
+    </label>
+  </div>
+  <!--  -->
+<div class="toggle">
+  <span>显示平均出行时间差异</span>
+  <!-- toggle switch  -->
+  <label class="switch">
+    <input type="checkbox"  id = "box">
+    <span class="slider round"></span>
+  </label>
+
+</div>
+
+      </div>
+		</div>
+	</div>
+
+  <!-- panel 2 -->
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseThree">
+           <h4 style = "font-weight:bold ;color:black">交通网络文件
+				</a>
+			</h4>
+		</div>
+		<div id="collapseThree" class="panel-collapse collapse">
+			<div class="panel-body">
+        开发中
+
+			</div>
+      
+		</div>
+	</div>
+
+  <!-- panel 3 -->
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseFour">
+           <a href="./mapgeojson/index.html"><h4 style = "font-weight:bold ;color:black">深圳市OD热力图(带掩膜)</a> 
+				</a>
+			</h4>
+		</div>
+		<div id="collapseFour" class="panel-collapse collapse">
+			<div class="panel-body">
+
+			</div>
+		</div>
+	</div>
+</div>
+      <!-- test -->
+      <div class="sidebar-toggle rounded-rect left" onclick="toggleSidebar('left')">
+      &rarr;
+      </div>
+      </div>
+      </div>
+
+
+<!-- sidebar -->
+
+
+
+
+
+
+
+
+
+    <!-- <div class="map-overlay top">
+      <div class="map-overlay-inner" >
+
+      
+      <fieldset> -->
+
+
+
+<!-- //right -->
+ <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+ <div id="main" style="height:100%;">
+   
+ </div>
+<div style="right:-830px;" class="contactusdiyou">
+  <div class="hoverbtn" id='open'>
+      <span>站</span><span>点</span><span>属</span><span>性</span>
+      <img class="hoverimg" src="images/hoverbtnbg.gif" height="9" width="13">
+  </div>
+  <div class="hoverbtn" id='close' style='display: none;'>
+      <span>站</span><span>点</span><span>属</span><span>性</span>
+      <img class="hoverimg" src="images/hoverbtnbg1.gif" height="9" width="13">
+  </div>
+  <div class="conter" style="position:absolute;height:100%;width:830px;left:0px;background:#FCFDFF">
+    <!-- rgba(255,255,255,0.9) -->
+      <ul id="myTab" class="nav nav-tabs">
+          <li class="active"><a href="#container2" data-toggle="tab">人口聚集指标</a></li>
+          <li><a href="#container3" data-toggle="tab">土地开发利用指标</a></li>
+          <li><a href="#cont4" data-toggle="tab">交通影响力指标</a></li>
+          <li><a href="#container5" data-toggle="tab">环境指标</a></li>
+          <li><a href="#container6" style="height: 100%;" data-toggle="tab">站点客流画像</a></li>
+          <li><a href="#container7" data-toggle="tab">大众点评<span style="font-size:smaller;color:grey">(后端开发中)</span></a></li>
+          <li><a href="#container8" data-toggle="tab" style="display:none">发表你的想法</a></li>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+          <div class="tab-pane fade in active" id="container2" style="position:absolute;height:100%;width:800px;"></div>
+          <div class="tab-pane fade" id="container3" style="position:absolute;height:68rem;width:800px"></div>
+          <div class="tab-pane fade" id="cont4" style="position:absolute;height:68rem;width:800px">
+              <div id="container4" style="position:absolute;height:68rem;width:800px">
+              </div>
+              <div class="input-card " style='right:50px;width:700px;top:60px;height:40px'>
+                  <input type="button" class="btn" value="显示等时圈" onClick="javascript:iso()" style='position:absolute;left: 5rem;width:20rem;height:2rem' />
+                  <input type="button"  class="btn" value="清除" onClick="javascript:heatmap(4)" style='position:absolute;left: 30rem;width:20rem;height:2rem' /> </div>
+          </div>
+          <div class="tab-pane fade" id="container5" style="position:absolute;height:68rem;;width:800px"></div>
+          <div class="tab-pane fade" id="container6" style="position:absolute;height:68rem;;width:800px">
+            <div id="container6-top" style="position:absolute;height:30rem;width:780px"></div>
+              <div id="container6-bottom"style="left:25px;top:32rem;position:absolute;height:30rem;width:780px; "></div>
+            </div>
+
+            <div class="tab-pane fade" id="container7" style="position:absolute;height:68rem;;width:800px">
+              <iframe src="http://127.0.0.1:5000/show" style="width: 100%;height:100%;"scrolling="yes"></iframe>
+            </div>     
+
+            <div class="tab-pane fade" id="container8" style="position:absolute;height:68rem;;width:800px">
+              <!-- <form id="form1" enctype="multipart/form-data"> -->
+                
+                <p>
+                  填写id：<input type="text" name="id" id="id">
+              </p>
+              <p>
+                  填写name：<input type="text" name="name" id="name">
+              </p>
+              <p>
+                  填写comments：<input type="text" name="comments" id="comments">
+              </p>
+              <p>
+                  上传photo：<input type="file" name="file" id="file" onchange="load()">
+              </p>
+              <p style="display: none;">
+                  photo64编码：<textarea cols="60" rows="15" id="show" name="show"></textarea>
+              </p>
+          
+              <button onclick="upload()">提交</button>
+
+            <!-- </form> -->
+            </div>     
+          </div>
+  </div>
+</div>
+<script>
+
+
+ 
+</script>
+<script src="./lib/aboutmap.js"></script>
+<script src="./lib/ecahrts_bar.js"></script>
+<!-- 当上传文件之后进行的操作 -->
+<script type="text/javascript">
+  function load() {
+      var file = document.getElementById('file').files[0]
+      console.log("读取源文件")
+      console.log(file)
+
+      var reader = new FileReader()
+      //将文件以Data URL形式读入页面
+      reader.readAsDataURL(file);
+      reader.onload = function() {
+          var imgUrlBase64 = this.result
+          console.log("转化为img64：")
+          console.log(imgUrlBase64)
+          document.getElementById('show').value = imgUrlBase64
+      }
+  }
+
+  function upload() {
+      let id = document.getElementById('id').value
+      let name = document.getElementById('name').value
+      let comment = document.getElementById('comments').value
+      let pht = document.getElementById('show').value
+      let send = [id,name,comment,pht]
+      let formData = JSON.stringify(send)
+      console.log('点击提交之后，打印FormData中的数据')
+      //console.log(formData.get('file'))
+      $.ajax({
+          url: 'http://127.0.0.1:5000/upload',
+          type: 'POST',
+          data: formData,
+          async: true,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(returndata) {
+              alert(returndata);
+              window.location.reload("#container8");
+          },
+          error: function(error) {
+              alert(error);
+          }
+      })
+  }
+</script>
+<!-- <script src="./lib/difference.js"></script> -->
+<script src="./js/sangji.js"></script>
+    <script>
+
+      function toggleSidebar(id) {
+        myChart_main.dispose()
+        begin_mapbox();
+        const elem = document.getElementById(id);
+        // Add or remove the 'collapsed' CSS class from the sidebar element.
+        // Returns boolean "true" or "false" whether 'collapsed' is in the class list.
+        const collapsed = elem.classList.toggle('collapsed');
+        const padding = {};
+        // 'id' is 'right' or 'left'. When run at start, this object looks like: '{left: 300}';
+        padding[id] = collapsed ? 0 : 300; // 0 if collapsed, 300 px if not. This matches the width of the sidebars in the .sidebar CSS class.
+        // Use `map.easeTo()` with a padding option to adjust node-canvasthe map's center accounting for the position of sidebars.
+        map.easeTo({
+          padding: padding,
+        duration: 1000 // In ms. This matches the CSS transition duration property.
+        });
+        
+        }
+      //function for showing the diffence of adding new line 
+      function Show_dif(){
+        option_dif = {
+          title: {
+            text: '出行减少时间'
+          },
+
+          xAxis: {
+            type: 'value',
+            show:false
+          },
+          yAxis: {
+            type: 'category',
+            data: ['reducing'],
+            show:true
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+            }
+          },
+          series: [
+          
+            {
+              
+              itemStyle: {
+              color: '#2b83ba'
+            },
+              name: '0',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"0"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#abdda4'
+              },
+              name: '5',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"5"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#ffffbf'
+              },
+              name: '10',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"10"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#fdae61'
+              },
+              name: '15',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"15"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#d7191c'
+              },
+              name: '>=20',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:">=20"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            }
+            
+          ]
+        };
+        option && myChart.setOption(option_dif);
+      }
+
+
+
+
+      //恢复原始图例
+      function origin(){
+      echarts.init(document.getElementById('main-charts')).dispose();
+      myChart = echarts.init(document.getElementById('main-charts'))
+       let this_option = {
+          title: {
+              text: '栅格可达性-图例'
+            },
+
+            left:0,
+            right:20,
+
+          xAxis: {
+            type: 'value',
+      
+            show:false
+          },
+          yAxis: {
+            type: 'category',
+            data: [46],
+            show : true,
+          },
+          series: [
+            {
+              name: '可达性',
+              type: 'bar',
+              data: [135],
+              label:{
+                  show:true,
+                  position:"right"
+              },
+              itemStyle : {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                                offset: 0,
+                                color: '#980043'
+                            }, {
+                                offset: 1,
+                                color: '#f1eef6'
+                            }]),
+                        },
+                    },
+        
+            }
+          ]
+        };
+        newmaxValue = Math.max.apply(
+          null,
+          jsondata.features.map(function (o) {
+            return o.properties.access2;
+          })
+        );
+        newminValue = Math.min.apply(
+          null,
+          jsondata.features.map(function (o) {
+            return o.properties.access2;
+          })
+        );
+
+        this_option.yAxis.data = [newminValue];
+        this_option.series[0].data = [newmaxValue];
+
+        myChart.setOption(this_option);  
+      }
+      
+      var all_obj = [];
+      var point_list = [];
+      var buffer_list = [];
+      access_obj = document.getElementById("accessbox");
+      toggle_obj = document.getElementById("box");
+      ori_obj = document.getElementById("ori_box");
+
+      toggle_obj.onchange = function() {
+
+        grid_feature_len = jsondata.features.length;
+        for (let k = 0; k < grid_feature_len; k++) {
+          jsondata.features[k].properties.access_change =
+            jsondata.features[k].properties.access333 -
+            jsondata.features[k].properties.access;
+        }
+
+        console.log(toggle_obj.checked)
+        if(toggle_obj.checked)
+        {
+          Show_dif();
+          map.addSource("states2", {
+            type: "geojson",
+            data: jsondata,
+            //'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
+          });
+          map.addLayer({
+            id: "state-fills2",
+            type: "fill",
+            source: "states2",
+            layout: {},
+            paint: {
+              "fill-color": [
+                "interpolate",
+        
+                ["linear"],
+        
+                ["get", "access_change"],
+        
+                0,
+                "#2b83ba",
+        
+                5,
+                "#abdda4",
+        
+                10,
+                "#ffffbf",
+        
+                15,
+                "#fdae61",
+        
+                20  ,
+                "#d7191c",
+              ],
+              "fill-opacity": 0.8,
+            },
+          });
+        }
+        else{
+          map.removeLayer("state-fills2");
+          map.removeSource("states2");
+          origin();
+        }
+
+      };
+
+      //function for showing the Hierarchical legend
+      function open(){
+        option_dif = {
+          title: {
+            text: '可达性分级情况'
+          },
+
+          xAxis: {
+            type: 'value',
+            show:false
+          },
+          yAxis: {
+            type: 'category',
+            data: ['level'],
+            show:true
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+            }
+          },
+          series: [
+          
+            {
+              
+              itemStyle: {
+              color: '#F99E9A'
+            },
+              name: '<60',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"好"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#B8F69D'
+              },
+              name: '60-70',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"较好"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#8BE9EF'
+              },
+              name: '70-80',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"中等"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            {
+              itemStyle: {
+                color: '#C490E7'
+              },
+              name: '>80',
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+                position:'inside',
+                formatter:"差"
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [1]
+            },
+            
+          ]
+        };
+        option && myChart.setOption(option_dif);
+      }
+
+      access_obj.onchange = function() {
+
+        grid_feature_len = jsondata.features.length;
+        for (let k = 0; k < grid_feature_len; k++) {
+          jsondata.features[k].properties.access_change =
+            jsondata.features[k].properties.access333 -
+            jsondata.features[k].properties.access;
+        }
+
+        console.log(access_obj.checked)
+        if(access_obj.checked && ori_obj.checked)
+        {
+    
+          ori_obj.checked = false
+          map.removeLayer("state-fills3")
+          //map.removeLayer("state-fills");
+         /* map.addSource("states2", {
+            type: "geojson",
+            data: jsondata,
+            //'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
+          });*/
+
+          map.addLayer({
+            id: "state-fills_access",
+            type: "fill",
+            source: "states2",
+            layout: {},
+            paint: {
+              "fill-color": [
+              "step",
+      
+              //["linear"],
+      
+              ["get", "access2"],
+      
+              
+              "#F99E9A",60,
+      
+              
+              "#B8F69D",70,
+      
+             
+              "#8BE9EF",80,
+
+              "#C490E7"
+
+              
+            ],
+              "fill-opacity": 0.8,
+            },
+          });
+        }
+        else if(!ori_obj.checked && access_obj.checked)
+        {
+          //map.removeLayer("state-fills");
+          open();
+          map.addSource("states2", {
+            type: "geojson",
+            data: jsondata,
+            //'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
+          });
+
+          map.addLayer({
+            id: "state-fills_access",
+            type: "fill",
+            source: "states2",
+            layout: {},
+            paint: {
+              "fill-color": [
+                "step",
+        
+                //["linear"],
+        
+                ["get", "access2"],
+        
+                
+                "#F99E9A",60,
+        
+                
+                "#B8F69D",70,
+        
+               
+                "#8BE9EF",80,
+
+                "#C490E7"
+
+                
+              ],
+              "fill-opacity": 0.8,
+            },
+          });
+        }
+        else{
+          map.removeLayer("state-fills_access");
+          map.removeSource("states2");
+          origin();
+        }
+
+
+      };
+
+
+      ori_obj.onchange = function() {
+
+
+        grid_feature_len = jsondata.features.length;
+        for (let k = 0; k < grid_feature_len; k++) {
+          jsondata.features[k].properties.access_change =
+            jsondata.features[k].properties.access333 -
+            jsondata.features[k].properties.access;
+        }
+
+        console.log(ori_obj.checked)
+        if(ori_obj.checked && access_obj.checked)
+        {
+          open();
+          access_obj.checked = false
+          map.removeLayer("state-fills_access")
+          map.addLayer({
+            id: "state-fills3",
+            type: "fill",
+            source: "states2",
+            layout: {},
+            paint: {
+              "fill-color": [
+                "step",
+        
+                //["linear"],
+        
+                ["get", "access333"],
+        
+                
+                "#F99E9A",60,
+        
+                
+                "#B8F69D",70,
+        
+               
+                "#8BE9EF",80,
+
+                "#C490E7"
+
+                
+              ],
+              "fill-opacity": 0.8,
+            },
+          });
+        }
+        else if(ori_obj.checked && !access_obj.checked)
+        {
+          open();
+
+          map.addSource("states2", {
+            type: "geojson",
+            data: jsondata,
+            //'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
+          });
+
+          map.addLayer({
+            id: "state-fills3",
+            type: "fill",
+            source: "states2",
+            layout: {},
+            paint: {
+              "fill-color": [
+                "step",
+        
+                //["linear"],
+        
+                ["get", "access333"],
+        
+                
+                "#F99E9A",60,
+        
+                
+                "#B8F69D",70,
+        
+               
+                "#8BE9EF",80,
+
+                "#C490E7"
+
+                
+              ],
+              "fill-opacity": 0.8,
+            },
+          });
+        }
+        else{
+          origin();
+          map.removeLayer("state-fills3");
+          map.removeSource("states2");
+        }
+
+
+      };
+      var l ;
+      var sum_len = 0;
+      counter = 0;
+      //collapse
+      $(function () { $('#collapseTwo').collapse('hide')});
+
+         //定义展开的功能
+    $(function() {
+      $("#open")
+          .click(function() {
+              $(".hoverimg")
+                  .attr("src", "images/hoverbtnbg1.gif");
+              $('.contactusdiyou')
+                  .animate({ right: '0' }, 300);
+              $("#open")
+                  .hide()
+              $("#close")
+                  .show()
+          });
+      $("#close")
+          .click(function() {
+              $(".hoverimg")
+                  .attr("src", "images/hoverbtnbg.gif");
+              $('.contactusdiyou')
+                  .animate({ right: '-830px' }, 300, function() {});
+
+              $("#open")
+                  .show()
+              $("#close")
+                  .hide()
+          });
+  })
+
+
+  //打开时展开
+  $(".hoverimg")
+      .attr("src", "images/hoverbtnbg1.gif");
+  $('.contactusdiyou')
+      .animate({ right: '0' }, 300);
+  $("#open")
+      .hide()
+  $("#close")
+      .show()
+    </script>
+    <script src="./lib/dashboard-chart.js"></script>
+  </body>
+</html>

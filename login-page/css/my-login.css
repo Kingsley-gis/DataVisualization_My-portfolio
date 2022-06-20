@@ -1,0 +1,96 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Poppins:wght@100&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Poppins:wght@100&display=swap');
+html,body {
+	height: 100%;
+}
+
+body.my-login-page {
+	/* background-color:rgba(12,16,28,0); */
+	font-size: 14px;
+}
+
+.my-login-page .brand {
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	/* justify-content: space-between; */
+	/* height: 90px; */
+	/* overflow: hidden;
+	border-radius: 50%;
+	margin: 40px auto;
+	box-shadow: 0 4px 8px rgba(0,0,0,.05); */
+	position: relative;
+	z-index: 1;
+}
+
+.my-login-page .brand img {
+	text-align: center;
+	/* width: 100px; */
+	width: 30%;
+	
+}
+
+.my-login-page .card-wrapper {
+
+	width: 500px;
+}
+
+.my-login-page .card {
+	border-color: transparent;
+	box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+.my-login-page .card.fat {
+	margin-top: 100px;
+	padding: 10px;
+}
+
+.my-login-page .card .card-title {
+	text-align: center;
+	/* font-family: 'Open Sans', sans-serif; */
+	/* margin-bottom: 30px; */
+}
+
+.my-login-page .card .card-subtitle {
+	text-align: center;
+	font-family: 'Open Sans', sans-serif;
+	margin-bottom: 30px;
+}
+
+.my-login-page .form-control {
+	border-width: 3.5px;
+	/* height: auto; */
+	/* width: 80%; */
+}
+
+.my-login-page .form-group label {
+	width: 50%;
+}
+
+.my-login-page .btn.btn-block {
+	padding: 12px 10px;
+}
+
+.my-login-page .footer {
+	margin: 40px 0;
+	color: #888;
+	text-align: center;
+}
+
+@media screen and (max-width: 425px) {
+	.my-login-page .card-wrapper {
+		width: 90%;
+		margin: 0 auto;
+	}
+}
+
+@media screen and (max-width: 320px) {
+	.my-login-page .card.fat {
+		padding: 0;
+	}
+
+	.my-login-page .card.fat .card-body {
+		padding: 10px;
+	}
+}

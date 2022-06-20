@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="utf-8" />
+  <title>Create a hover effect</title>
+  <meta
+    name="viewport"
+    content="initial-scale=1,maximum-scale=1,user-scalable=no"
+  />
+<h1>展示数据</h1>
+<style>
+    table,
+    th,
+    td {
+        border-bottom: 1px solid red;
+        height: 80px;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        width: 300px;
+        text-align: center;
+    }
+
+    .name {
+      width:100px
+    }
+    .comment {
+      width:450px
+    }
+    .photo {
+      width:450px
+    }
+    .img {
+        width: 100px;
+        height: 100px;
+    }
+
+      
+</style>
+
+<body>
+  <!-- <div class="container">
+    <div class="row">
+      <div class="col">
+        1 of 3
+      </div>
+      <div class="col-6">
+        2 of 3 (wider)
+      </div>
+      <div class="col">
+        3 of 3
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        1 of 3
+      </div>
+      <div class="col-5">
+        2 of 3 (wider)
+      </div>
+      <div class="col">
+        3 of 3
+      </div>
+    </div>
+  </div> -->
+    <!-- <table style="border: none;">
+        <tr>
+            <th class="name" style="height: 0">name</th>
+            <th class="comment" style="height: 0">comments</th>
+            <th class="photo" style="height: 0">photo</th>
+        </tr>
+      </table> -->
+
+        <table style="border: none;">
+        <tr>
+            <th>name</th>
+            <th >comments</th>
+            <th >photo</th>
+        </tr>
+      
+
+        {% for x in mycol.find() %}
+        <tr >
+            <th>{{x.name}}</th>
+            <th>{{x.comments}}</th>
+            <th><a href=""><img src={{x.photo}} class="img"></a></th>
+        </tr>
+        {% endfor %}
+      </table>
+    <script type="text/javascript">
+      function load() {
+          var file = document.getElementById('file').files[0]
+          console.log("读取源文件")
+          console.log(file)
+    
+          var reader = new FileReader()
+          //将文件以Data URL形式读入页面
+          reader.readAsDataURL(file);
+          reader.onload = function() {
+              var imgUrlBase64 = this.result
+              console.log("转化为img64：")
+              console.log(imgUrlBase64)
+              document.getElementById('show').value = imgUrlBase64
+          }
+      }
+    
+      function upload() {
+          let id = document.getElementById('comment').value
+          let name = document.getElementById('name').value
+          let comment = document.getElementById('comment').value
+          let pht = document.getElementById('show').value
+          let send = [id,name,comment,pht]
+          let formData = JSON.stringify(send)
+          console.log('点击提交之后，打印FormData中的数据')
+          //console.log(formData.get('file'))
+          $.ajax({
+              url: 'http://127.0.0.1:5000/upload',
+              type: 'POST',
+              data: formData,
+              async: true,
+              cache: false,
+              contentType: false,
+              processData: false,
+              success: function(returndata) {
+                  alert(returndata);
+                  window.location.reload("#container8");
+              },
+              error: function(error) {
+                  alert(error);
+              }
+          })
+      }
+    </script>
+</body>
+</html>
